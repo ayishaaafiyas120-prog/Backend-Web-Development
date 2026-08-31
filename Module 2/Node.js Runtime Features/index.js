@@ -25,18 +25,30 @@ const OUTPUT = path.join(__dirname, 'sample-copy.txt');
 function readWholeFile() {
   // TODO: use fs.readFile(INPUT, callback). With no encoding, the callback
   //       receives a Buffer.
+  fs.readFile(INPUT, (err, data) => {
   // TODO: if there is an error, log it and return.
+  if(err) {
+    console.error(err);
+    return;
+  }
   // TODO: log the size in bytes. A Buffer has a .length property (bytes).
   //       Example log: "readFile: loaded 524288 bytes into memory".
+  console.log(`readFile: loaded ${data.length} bytes into memory`);
+});
 }
-
 // ── PART 2: stream the file and pipe it to a writable stream ────────────────
 function streamFile() {
   // TODO: create a readable stream with fs.createReadStream(INPUT).
+  const readable = fs.createReadStream(INPUT);
   // TODO: create a writable stream with fs.createWriteStream(OUTPUT).
+  const writable = fs.createWriteStream(OUTPUT);
   // TODO: pipe the readable into the writable: readable.pipe(writable).
+  readable.pipe(writable);
   // TODO: listen for the writable's "finish" event and log a done message,
   //       e.g. "stream: finished copying via 64KB chunks (flat memory)".
+  writable.on('finish', () => {
+    console.log('stream: finished copying via 64KB chunks (flat memory)');
+  });
 }
 
 // ── PART 3: explain the difference ──────────────────────────────────────────
@@ -46,7 +58,7 @@ function streamFile() {
 //       so peak memory stays flat regardless of file size.
 //
 // YOUR EXPLANATION:
-//
+// The stream approach is preferable for large files because it processes the data in chunks rather than loading the entire file into memory at once. This keeps the memory usage constant regardless of the file size, making it more efficient and scalable for handling large files.
 
 // Run both approaches.
 readWholeFile();
