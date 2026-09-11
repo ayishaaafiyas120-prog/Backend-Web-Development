@@ -23,10 +23,11 @@ exports.editPost = async (postId, userId, changes) => {
   if(post.authorId !== userId){
     throw new AppError('You can only edit your own post', 403);
   }
-  if(Data.now() -post.createdAt > EDIT_WINDOW_MS){
+  if(Date.now() -post.createdAt > EDIT_WINDOW_MS){
     throw new AppError('Post can no longer be edited', 403);
   }
   return repo.update(postId, changes);
 
 // throw new AppError('editPost is not implemented yet', 501);
 };
+
